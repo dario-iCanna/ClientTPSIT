@@ -19,11 +19,12 @@ public class ThreadClient extends Thread {
         try {
             while (connessione) {
                 boolean run = true;
-                switch (in.readLine()) {
+                String[] invio = in.readLine().split("@", 2);
+                switch (invio[0]) {
                     case "L":
                         while (run) {
                             String msg = in.readLine();
-                            if (msg != "L") {
+                            if (msg.charAt(0) != 'L') {
                                 System.out.println("-" + msg);
                             } else
                                 run = false;
@@ -38,6 +39,17 @@ public class ThreadClient extends Thread {
                                 run = false;
                         }
                         break;
+                    case "PRIVATE":
+                        System.out.println(invio[1]);
+                        break;
+                    case "NPr":
+                        System.out.println("utente non esistente");
+                        break;
+                    case "ALL":
+                        System.out.println(invio[1]);
+                        break;
+                    case "EXIT":
+                        System.out.println(invio[1]+" si è disconnesso");
                     default:
                         break;
                 }
