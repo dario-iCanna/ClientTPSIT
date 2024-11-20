@@ -9,7 +9,7 @@ import java.net.Socket;
 public class ThreadClient extends Thread {
     BufferedReader in;
 
-    public ThreadClient(Socket s,BufferedReader in) throws IOException {
+    public ThreadClient(Socket s, BufferedReader in) throws IOException {
         super();
         this.in = new BufferedReader(new InputStreamReader((s.getInputStream())));
     }
@@ -18,7 +18,26 @@ public class ThreadClient extends Thread {
         boolean connessione = true;
         try {
             while (connessione) {
+                boolean run = true;
                 switch (in.readLine()) {
+                    case "L":
+                        while (run) {
+                            String msg = in.readLine();
+                            if (msg != "L") {
+                                System.out.println("-" + msg);
+                            } else
+                                run = false;
+                        }
+                        break;
+                    case "LG":
+                        while (run) {
+                            String msg = in.readLine();
+                            if (msg != "LG") {
+                                System.out.println("-" + msg);
+                            } else
+                                run = false;
+                        }
+                        break;
                     default:
                         break;
                 }
