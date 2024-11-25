@@ -19,10 +19,10 @@ public class Main {
 
         boolean ins = true;
         while (ins) {
-            System.out.println("inserisci nome senza @");
+            System.out.println("inserisci nome senza @ o :");
             String nome = input.nextLine();
             for (int i = 0; i < nome.length(); i++) {
-                if (nome.charAt(i) == '@') {
+                if (nome.charAt(i) == '@' || nome.charAt(i) == ':') {
                     break;
                 }
             }
@@ -35,49 +35,45 @@ public class Main {
 
         ThreadClient td = new ThreadClient(s, in);
         td.start();
-
+        System.out.println("Spiegazione comandi");
+        System.out.println("\\list lista utenti");
+        System.out.println("\\p <destinatario>:<messaggio> messaggio privato a destinatario");
+        System.out.println("\\exit esci dalla chat");
         boolean connessione = true;
         while (connessione) {
-            System.out.println("1)lista utenti");
-            System.out.println("2)lista gruppi");
-            System.out.println("3)lista utenti del gruppo");
-            System.out.println("4)messaggio privato");
-            System.out.println("5)messaggio pubblico");
-            System.out.println("6)messaggio a gruppo");
-            System.out.println("7)esci");
-
-            switch (input.nextLine()) {
-                case "1":
-                    out.writeBytes("LIST" + '\n');
+            
+            String action = input.nextLine();
+            switch (action.charAt(0)) {
+                case '\\':
+                String [] split = action.split(" ", 2);
+                switch(split[0]){
+                    case "\\list":
+                        out.writeBytes("LIST" + '\n');
+                        break;
+                    case "\\p":
+                        try {
+                            split = split[1].split(":", 2);
+                        out.writeBytes("PRIVATE@" + split[0] + "@" + split[1] + '\n');
+                        } catch (Exception e) {
+                            System.out.println("comando non completo");
+                        }
+                        
+                        break;
+                    case "\\exit":
+                        out.writeBytes("EXIT" + '\n');
+                        s.close();
+                        connessione = false;
+                        break;
+                    default:
+                        System.out.println("comando non riconosciuto");
+                        break;
+                }
+                    
                     break;
-                case "2":
-                    out.writeBytes("LISTGR" + '\n');
+                default:
+                    out.writeBytes("ALL@" + action + '\n');
                     break;
-                case "3":
-                    System.out.println("inserire nome gruppo da visualizzare");
-                    out.writeBytes("LISTUGR@" + input.nextLine() + '\n');
-                    break;
-                case "4":
-                    System.out.println("inserire nome destinatario");
-                    String dest = input.nextLine();
-                    System.out.println("inserire messaggio");
-                    out.writeBytes("PRIVATE@" + dest + "@" + input.nextLine() + '\n');
-                    break;
-                case "5":
-                    System.out.println("inserire messaggio");
-                    out.writeBytes("ALL@" + input.nextLine() + '\n');
-                    break;
-                case "6":
-                    System.out.println("inserire id gruppo");
-                    String gr = input.nextLine();
-                    System.out.println("inserire messaggio");
-                    out.writeBytes("GROUP@" + input.nextLine() + "@" + gr + '\n');
-                    break;
-                case "7":
-                    out.writeBytes("EXIT" + '\n');
-                    s.close();
-                    connessione = false;
-                    break;
+                
             }
 
         }
